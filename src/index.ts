@@ -5,7 +5,7 @@ interface Color {
 }
 
 export const color = {
-    red: 10,
+    red: 20,
     blue: 10,
     green: 10
 }
