@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 declare global {
     namespace Express {
         interface Request {
-            currentUser?: jwt.JwtPayload | string;
+            currentUser?: any;
         }
     }
 }
