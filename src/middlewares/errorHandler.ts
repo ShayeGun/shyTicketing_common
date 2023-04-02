@@ -7,6 +7,7 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
         return res.status(err.statusCode).send(err.serializeError())
     }
 
+    console.error(err);
     res.status(404).json({
         Errors: { message: err.message }
     })
