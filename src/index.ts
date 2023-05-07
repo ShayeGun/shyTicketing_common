@@ -9,3 +9,8 @@ export * from './middlewares/current-user';
 export * from './middlewares/errorHandler';
 export * from './middlewares/require-auth';
 export * from './middlewares/validate-request';
+
+export * from './events/base-emitter';
+export * from './events/base-listener';
+export * from './events/base-utils';
+
