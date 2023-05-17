@@ -13,15 +13,22 @@ abstract class BaseEmitter<T extends IEmmit>{
     declare private connection: Connection;
     declare private channel: Channel;
 
-    async startup(uri: string = "amqp://localhost") {
+    async checkConnection() {
+        if (!this.channel || !this.connection) {
+            console.log("making connection ...");
+            this.connect()
+        }
+
+        return
+    }
+
+    async connect(uri: string = "amqp://localhost") {
         this.connection = await connect(uri);
         this.channel = await this.connection.createChannel();
-
-        return this
-
     }
 
     async createExchange(exchange: T["exchange"] = Exchanges.Default, type: string = "fanout", opt?: {}) {
+        this.checkConnection();
         await this.channel!.assertExchange(exchange, type, opt);
     }
 
