@@ -16,7 +16,7 @@ abstract class BaseListener<T extends IListen>{
     async checkConnection() {
         if (!this.channel || !this.connection) {
             console.log("making connection ...");
-            this.connect()
+            await this.connect()
         }
 
         return
@@ -31,12 +31,12 @@ abstract class BaseListener<T extends IListen>{
     }
 
     async createExchange(exchange: T["exchange"] = Exchanges.Default, type: string = "fanout", opt?: {}) {
-        this.checkConnection();
+        await this.checkConnection();
         await this.channel!.assertExchange(exchange, type, opt);
     }
 
     async createQueue(queueName: T["queue"] = Queues.Default, opt?: {}) {
-        this.checkConnection();
+        await this.checkConnection();
         const queue = await this.channel!.assertQueue(queueName, opt);
         this.channel!.prefetch(1);
 

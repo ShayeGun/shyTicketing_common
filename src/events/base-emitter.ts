@@ -16,7 +16,7 @@ abstract class BaseEmitter<T extends IEmmit>{
     async checkConnection() {
         if (!this.channel || !this.connection) {
             console.log("making connection ...");
-            this.connect()
+            await this.connect()
         }
 
         return
@@ -28,7 +28,7 @@ abstract class BaseEmitter<T extends IEmmit>{
     }
 
     async createExchange(exchange: T["exchange"] = Exchanges.Default, type: string = "fanout", opt?: {}) {
-        this.checkConnection();
+        await this.checkConnection();
         await this.channel!.assertExchange(exchange, type, opt);
     }
 
