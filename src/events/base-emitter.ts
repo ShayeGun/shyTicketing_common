@@ -12,6 +12,7 @@ abstract class BaseEmitter<T extends IEmmit>{
 
     declare private connection: Connection;
     declare private channel: Channel;
+    protected abstract key: T["key"];
 
     async checkConnection() {
         if (!this.channel || !this.connection) {
@@ -32,10 +33,7 @@ abstract class BaseEmitter<T extends IEmmit>{
         await this.channel!.assertExchange(exchange, type, opt);
     }
 
-    async publish(msg: T["msg"] = 'hello world!', key: T["key"] = Keys.Default, exchange: T['exchange'] = Exchanges.Default) {
-        this.channel.publish(exchange, key, Buffer.from(JSON.stringify(msg)));
-        console.log(` [x] Sent ${key}: '${msg}'`);
-    }
+    abstract publish(): void;
 
     async close() {
         const conn = this.connection;

@@ -11,7 +11,7 @@ abstract class BaseListener<T extends IListen>{
 
     declare private connection: Connection;
     declare private channel: Channel;
-    // declare private key: T["key"];
+    protected abstract key: T["key"];
 
     async checkConnection() {
         if (!this.channel || !this.connection) {
@@ -43,17 +43,7 @@ abstract class BaseListener<T extends IListen>{
         return queue
     }
 
-    async listen(key: T["key"] = Keys.Default, exchange: T['exchange'] = Exchanges.Default, queue: Replies.AssertQueue) {
-        await this.channel!.bindQueue(queue.queue, exchange, key);
-
-        this.channel!.consume(queue.queue, async (msg) => {
-            console.log(` [x] ${msg!.fields.routingKey}:'${msg!.content.toString()}'`);
-
-            this.channel!.ack(msg!);
-        }, {
-            noAck: false
-        });
-    }
+    abstract listen(): void;
 }
 
 // (async () => {
