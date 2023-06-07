@@ -33,8 +33,6 @@ abstract class BaseEmitter<T extends IEmmit>{
         await this.channel!.assertExchange(exchange, type, opt);
     }
 
-    abstract publish(): void;
-
     async close() {
         const conn = this.connection;
 
@@ -43,6 +41,8 @@ abstract class BaseEmitter<T extends IEmmit>{
             process.exit(0);
         }, 500);
     }
+
+    abstract publish(): Promise<void>;
 }
 
 // (async () => {

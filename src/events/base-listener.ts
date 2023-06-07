@@ -43,7 +43,7 @@ abstract class BaseListener<T extends IListen>{
         return queue
     }
 
-    abstract listen(): void;
+    abstract listen(): Promise<void>;
 }
 
 // (async () => {
