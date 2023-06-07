@@ -9,8 +9,8 @@ interface IListen {
 
 abstract class BaseListener<T extends IListen>{
 
-    declare private connection: Connection;
-    declare private channel: Channel;
+    declare protected connection: Connection;
+    declare protected channel: Channel;
     protected abstract key: T["key"];
 
     async checkConnection() {
