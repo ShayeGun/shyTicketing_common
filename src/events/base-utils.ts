@@ -6,6 +6,14 @@ export enum Keys {
     OrderCancelled = "order.cancel"
 }
 
+export enum ExchangeTypes {
+    FANOUT = "fanout",
+    DIRECT = "direct",
+    TOPIC = "topic",
+    HEADERS = "headers",
+    MATCH = "match"
+}
+
 export enum Exchanges {
     Default = "E1",
     Ticket = "ticket",

@@ -1,5 +1,5 @@
-import { connect, Channel, Connection, Replies } from 'amqplib';
-import { Keys, Exchanges, Queues } from './base-utils';
+import { connect, Channel, Connection, Options } from 'amqplib';
+import { Keys, Exchanges, Queues, ExchangeTypes } from './base-utils';
 
 interface IListen {
     key: Keys;
@@ -16,31 +16,31 @@ abstract class BaseListener<T extends IListen>{
     async checkConnection() {
         if (!this.channel || !this.connection) {
             console.log("making connection ...");
-            await this.connect()
+            await this.connect();
         }
 
-        return
+        return;
     }
 
     async connect(uri: string = "amqp://localhost") {
         this.connection = await connect(uri);
         this.channel = await this.connection.createChannel();
 
-        return this
+        return this;
 
     }
 
-    async createExchange(exchange: T["exchange"] = Exchanges.Default, type: string = "fanout", opt?: {}) {
+    async createExchange(exchange: T["exchange"] = Exchanges.Default, type: ExchangeTypes = ExchangeTypes.FANOUT, opt?: Options.AssertExchange) {
         await this.checkConnection();
         await this.channel!.assertExchange(exchange, type, opt);
     }
 
-    async createQueue(queueName: T["queue"] = Queues.Default, opt?: {}) {
+    async createQueue(queueName: T["queue"] = Queues.Default, opt?: Options.AssertQueue) {
         await this.checkConnection();
         const queue = await this.channel!.assertQueue(queueName, opt);
         this.channel!.prefetch(1);
 
-        return queue
+        return queue;
     }
 
     abstract listen(): Promise<void>;

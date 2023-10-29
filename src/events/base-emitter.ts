@@ -1,5 +1,5 @@
-import { connect, Channel, Connection } from 'amqplib';
-import { Keys, Exchanges, Queues } from './base-utils';
+import { connect, Channel, Connection, Options } from 'amqplib';
+import { Keys, Exchanges, Queues, ExchangeTypes } from './base-utils';
 
 interface IEmmit {
     key: Keys;
@@ -17,10 +17,10 @@ abstract class BaseEmitter<T extends IEmmit>{
     async checkConnection() {
         if (!this.channel || !this.connection) {
             console.log("making connection ...");
-            await this.connect()
+            await this.connect();
         }
 
-        return
+        return;
     }
 
     async connect(uri: string = "amqp://localhost") {
@@ -28,7 +28,7 @@ abstract class BaseEmitter<T extends IEmmit>{
         this.channel = await this.connection.createChannel();
     }
 
-    async createExchange(exchange: T["exchange"] = Exchanges.Default, type: string = "fanout", opt?: {}) {
+    async createExchange(exchange: T["exchange"] = Exchanges.Default, type: ExchangeTypes = ExchangeTypes.FANOUT, opt?: Options.AssertExchange) {
         await this.checkConnection();
         await this.channel!.assertExchange(exchange, type, opt);
     }
