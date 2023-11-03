@@ -37,10 +37,19 @@ abstract class BaseListener<T extends IListen>{
 
     async createQueue(queueName: T["queue"] = Queues.Default, opt?: Options.AssertQueue) {
         await this.checkConnection();
-        const queue = await this.channel!.assertQueue(queueName, opt);
         this.channel!.prefetch(1);
+        const queue = await this.channel!.assertQueue(queueName, opt);
 
         return queue;
+    }
+
+    async close() {
+        const conn = this.connection;
+
+        setTimeout(function () {
+            conn.close();
+            process.exit(0);
+        }, 500);
     }
 
     abstract listen(): Promise<void>;
