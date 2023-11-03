@@ -39,7 +39,7 @@ abstract class BaseEmitter<T extends IEmmit>{
         setTimeout(function () {
             conn.close();
             process.exit(0);
-        }, 500);
+        }, 0);
     }
 
     abstract publish(): Promise<void>;

@@ -49,7 +49,7 @@ abstract class BaseListener<T extends IListen>{
         setTimeout(function () {
             conn.close();
             process.exit(0);
-        }, 500);
+        }, 0);
     }
 
     abstract listen(): Promise<void>;
