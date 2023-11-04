@@ -34,7 +34,7 @@ abstract class BaseListener<T extends IListen>{
     }
 
 
-    async connect() {
+    async connectChannel() {
         this.channel = await BaseListener.connection.createChannel();
 
         return this;
@@ -53,7 +53,7 @@ abstract class BaseListener<T extends IListen>{
         return queue;
     }
 
-    async close() {
+    async closeChannel() {
         await this.channel.close();
     }
 
