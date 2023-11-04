@@ -10,22 +10,36 @@ interface IEmmit {
 
 abstract class BaseEmitter<T extends IEmmit>{
 
-    declare protected connection: Connection;
+    static connection: Connection;
+
     declare protected channel: Channel;
     protected abstract key: T["key"];
 
-    async checkConnection() {
-        if (!this.channel || !this.connection) {
-            console.log("making connection ...");
-            await this.connect();
-        }
+
+
+    static async connect(uri: string = "amqp://localhost"): Promise<void> {
+        BaseEmitter.connection = await connect(uri);
+    }
+    static async close() {
+        await BaseEmitter.connection.close();
+    }
+
+    constructor(private uri: string = "amqp://localhost") { }
+
+    async checkConnection(): Promise<void> {
+        if (!BaseEmitter.connection) await BaseEmitter.connect(this.uri);
+        console.log("connection created !");
+
+        if (!this.channel) await BaseEmitter.connection.createChannel();
+        console.log("channel created !");
 
         return;
     }
 
-    async connect(uri: string = "amqp://localhost") {
-        this.connection = await connect(uri);
-        this.channel = await this.connection.createChannel();
+    async connectChannel() {
+        this.channel = await BaseEmitter.connection.createChannel();
+
+        return this;
     }
 
     async createExchange(exchange: T["exchange"] = Exchanges.Default, type: ExchangeTypes = ExchangeTypes.FANOUT, opt?: Options.AssertExchange) {
@@ -33,13 +47,8 @@ abstract class BaseEmitter<T extends IEmmit>{
         await this.channel!.assertExchange(exchange, type, opt);
     }
 
-    async close() {
-        const conn = this.connection;
-
-        setTimeout(function () {
-            conn.close();
-            process.exit(0);
-        }, 0);
+    async closeChannel() {
+        await this.channel.close();
     }
 
     abstract publish(): Promise<void>;

@@ -9,25 +9,35 @@ interface IListen {
 
 abstract class BaseListener<T extends IListen>{
 
-    declare protected connection: Connection;
+    static connection: Connection;
+
     declare protected channel: Channel;
     protected abstract key: T["key"];
 
-    async checkConnection() {
-        if (!this.channel || !this.connection) {
-            console.log("making connection ...");
-            await this.connect();
-        }
+    static async connect(uri: string = "amqp://localhost"): Promise<void> {
+        BaseListener.connection = await connect(uri);
+    }
+    static async close() {
+        await BaseListener.connection.close();
+    }
+
+    constructor(private uri: string = "amqp://localhost") { }
+
+    async checkConnection(): Promise<void> {
+        if (!BaseListener.connection) await BaseListener.connect(this.uri);
+        console.log("connection created !");
+
+        if (!this.channel) await BaseListener.connection.createChannel();
+        console.log("channel created !");
 
         return;
     }
 
-    async connect(uri: string = "amqp://localhost") {
-        this.connection = await connect(uri);
-        this.channel = await this.connection.createChannel();
+
+    async connect() {
+        this.channel = await BaseListener.connection.createChannel();
 
         return this;
-
     }
 
     async createExchange(exchange: T["exchange"] = Exchanges.Default, type: ExchangeTypes = ExchangeTypes.FANOUT, opt?: Options.AssertExchange) {
@@ -44,12 +54,7 @@ abstract class BaseListener<T extends IListen>{
     }
 
     async close() {
-        const conn = this.connection;
-
-        setTimeout(function () {
-            conn.close();
-            process.exit(0);
-        }, 0);
+        await this.channel.close();
     }
 
     abstract listen(): Promise<void>;
