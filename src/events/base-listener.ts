@@ -15,10 +15,10 @@ abstract class BaseListener<T extends IListen>{
     protected abstract key: T["key"];
 
     static async connect(uri: string = "amqp://localhost"): Promise<void> {
-        BaseListener.connection = await connect(uri);
+        if (!BaseListener.connection) BaseListener.connection = await connect(uri);
     }
     static async close() {
-        await BaseListener.connection.close();
+        if (BaseListener.connection) await BaseListener.connection.close();
     }
 
     constructor(private uri: string = "amqp://localhost") { }

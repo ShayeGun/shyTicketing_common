@@ -18,10 +18,10 @@ abstract class BaseEmitter<T extends IEmmit>{
 
 
     static async connect(uri: string = "amqp://localhost"): Promise<void> {
-        BaseEmitter.connection = await connect(uri);
+        if (!BaseEmitter.connection) BaseEmitter.connection = await connect(uri);
     }
     static async close() {
-        await BaseEmitter.connection.close();
+        if (BaseEmitter.connection) await BaseEmitter.connection.close();
     }
 
     constructor(private uri: string = "amqp://localhost") { }
