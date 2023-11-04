@@ -9,7 +9,7 @@ interface IListen {
 
 abstract class BaseListener<T extends IListen>{
 
-    static connection: Connection;
+    private static connection: Connection;
 
     declare protected channel: Channel;
     protected abstract key: T["key"];

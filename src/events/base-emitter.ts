@@ -10,7 +10,7 @@ interface IEmmit {
 
 abstract class BaseEmitter<T extends IEmmit>{
 
-    static connection: Connection;
+    private static connection: Connection;
 
     declare protected channel: Channel;
     protected abstract key: T["key"];
